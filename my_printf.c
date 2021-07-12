@@ -1,22 +1,21 @@
 #include <unistd.h> // for write()
-#include <stdio.h> // for printf() ~ to be deleted
 #include <stdarg.h>     /* va_list, va_start, va_arg, va_end */
 #include <stdint.h>
-#include <string.h>
 
-
+// helper function to write a character
 void my_putchar(char c) {
   write(1, &c, 1);
 }
 
+// main printf function
 int my_printf(char* format, ...) {
-    int print_count = 0;
+    int print_count = 0; // holds the number of characters that are printed to the screen
     va_list vl;
     va_start(vl,format);
-    for (int i = 0; format[i] != 0; i++) {
-        if (format[i] == '%') {
+    for (int i = 0; format[i] != 0; i++) { // loops through the format string to print characters
+        if (format[i] == '%') { // if reach a specifier, see what to print
             i++;
-            if (format[i] == '%') {
+            if (format[i] == '%') { // 
                 my_putchar(format[i]);
                 print_count++;
             }
@@ -39,6 +38,7 @@ int my_printf(char* format, ...) {
                 }
                 int temp = 0;
                 if (format[i] == 'd' || format[i] == 'u') {
+                    // need to reverse in order to print
                     while (val != 0) {
                         temp *= 10;
                         temp += val % 10;
@@ -55,6 +55,7 @@ int my_printf(char* format, ...) {
                     }
                 }
                 else if (format[i] == 'x') {
+                    // need to convert number from decimal to hexadecimal
                     char hexdecnum[100];
                     int j = 0;
                     while (val != 0) { 
@@ -69,16 +70,14 @@ int my_printf(char* format, ...) {
                         j++;
                         val = val / 16; 
                     }
-                    // my_putchar('0');
-                    // print_count++;
-                    // my_putchar('x');
-                    // print_count++;
+                    // print each digit in the number
                     for ( ; j >= 0; j--) {
                         my_putchar(hexdecnum[j]);
                         print_count++;
                     }
                 }
                 else if (format[i] == 'o') {
+                    // need to convert number from decmal to octodecimal
                     char octdecnum[100];
                     int j = 0;
                     while (val != 0) { 
@@ -93,10 +92,7 @@ int my_printf(char* format, ...) {
                         j++;
                         val = val / 8; 
                     }
-                    // my_putchar('0');
-                    // print_count++;
-                    // my_putchar('o');
-                    // print_count++;
+                    // print each digit in the number
                     for ( ; j >= 0; j--) {
                         my_putchar(octdecnum[j]);
                         print_count++;
@@ -128,8 +124,10 @@ int my_printf(char* format, ...) {
                 void* val;
                 val=va_arg(vl,void*);
 
+                // need to convert pointer to a type that holds the address
                 uintptr_t x = (uintptr_t)val;
 
+                // convert to hexadecimal
                 int temp = 0;
                 char hexdecnum[100];
                 int j = 0;
@@ -145,6 +143,7 @@ int my_printf(char* format, ...) {
                     j++;
                     x = x / 16; 
                 }
+                // print the address
                 my_putchar('0');
                 print_count++;
                 my_putchar('x');
@@ -153,36 +152,29 @@ int my_printf(char* format, ...) {
                     my_putchar(hexdecnum[j]);
                     print_count++;
                 }
-
-                // char buf[2 + sizeof(x) * 2];
-                // size_t i;
-
-                // buf[0] = '0';
-                // buf[1] = 'x';
-                // for (i = 0; i < sizeof(x) * 2; i++) {
-                //     buf[i + 2] = "0123456789abcdef"[(x >> ((sizeof(x) * 2 - 1 - i) * 4)) & 0xf];
-                // }
-
-                // write(1, buf, sizeof(buf));
             }
         }
         else {
+            // if there is no specifer, then the character is simply printed normally
             my_putchar(format[i]);
             print_count++;
         }
     }
     va_end(vl);
 
-    return print_count;
+    return print_count; // return the number of characters printed to the screen
 }
 
+// #include <stdio.h> // for printf()
 
+// main to show example of printf function
 int main() {
+    // Example of my_printf() with each type printed
     int s = 7;
     int* ptr = &s;
     my_printf("String: %s\tChar: %c %c\td: %d %d\to: %o\tu: %u\tx: %x\tp: %p %p\n", "Hello", 'a', 74, 168, -1, 271, 42, 271, &s, ptr);
-    // int* ptr = &s;
-    // char* str = (char*)ptr;
-    printf("String: %s\tChar: %c %c\td: %d %d\to: %o\tu: %u\tx: %x\tp: %p %p\n", "Hello", 'a', 74, 168, -1, 271, 42, 271, &s, ptr);
+    // Compare to C library printf function
+    // Need to uncomment include statement above to compare
+    // printf("String: %s\tChar: %c %c\td: %d %d\to: %o\tu: %u\tx: %x\tp: %p %p\n", "Hello", 'a', 74, 168, -1, 271, 42, 271, &s, ptr);
     return 0;
 }
