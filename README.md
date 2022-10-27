@@ -38,7 +38,7 @@ $> ./my_printf
 ## Example of Print Function
 
 Function call:
-```sh
+```C
 my_printf("String: %s\tChar: %c %c\td: %d %d\to: %o\tu: %u\tx: %x\tp: %p %p\n", "Hello", 'a', 74, 168, -1, 271, 42, 271, &s, ptr);
 ```
 
